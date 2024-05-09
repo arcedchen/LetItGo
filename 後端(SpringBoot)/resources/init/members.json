@@ -1,0 +1,82 @@
+[
+  {
+    "memberId": "1",
+    "memberName": "Amy",
+    "memberEmail": "amy@mail.com",
+    "memberPassword": "1234",
+    "memberPhone": "0977283180",
+    "accountStatus": "1",
+    "createTime": "2024-01-01 00:00:00",
+    "lastLoginTime": "2024-01-10 00:00:00",
+    "memberDetail": {
+      "memberAge": "23",
+      "memberGender": "female",
+      "birthDate": "2000-10-01",
+      "memberAddress": "台北市大安區敦化南路一段"
+    }
+  },
+  {
+    "memberId": "2",
+    "memberName": "Bob",
+    "memberEmail": "bob@mail.com",
+    "memberPassword": "1234",
+    "memberPhone": "0965022396",
+    "accountStatus": "1",
+    "createTime": "2024-01-01 00:00:00",
+    "lastLoginTime": "2024-01-11 00:00:00",
+    "memberDetail": {
+      "memberAge": "33",
+      "memberGender": "male",
+      "birthDate": "1991-03-01",
+      "memberAddress": "高雄市前鎮區成功二路"
+    }
+  },
+  {
+    "memberId": "3",
+    "memberName": "Zoe",
+    "memberEmail": "zoe@mail.com",
+    "memberPassword": "1234",
+    "memberPhone": "0940150050",
+    "accountStatus": "1",
+    "createTime": "2024-01-01 00:00:00",
+    "lastLoginTime": "2024-01-13 00:00:00",
+    "memberDetail": {
+      "memberAge": "25",
+      "memberGender": "female",
+      "birthDate": "1998-06-06",
+      "memberAddress": "台中市西屯區文心路三段"
+    }
+  },
+  {
+    "memberId": "4",
+    "memberName": "Jim",
+    "memberEmail": "jim@mail.com",
+    "memberPassword": "1234",
+    "memberPhone": "0905388562",
+    "accountStatus": "1",
+    "createTime": "2024-01-01 00:00:00",
+    "lastLoginTime": "2024-01-12 00:00:00",
+    "memberDetail": {
+      "memberAge": "63",
+      "memberGender": "male",
+      "birthDate": "1960-09-24",
+      "memberAddress": "台南市中西區民族路二段"
+    }
+  },
+  {
+    "memberId": "5",
+    "memberName": "Timmy",
+    "memberEmail": "separate1314@gmail.com",
+    "memberPassword": "1234",
+    "memberPhone": "0978707767",
+    "accountStatus": "1",
+    "createTime": "2024-01-01 00:00:00",
+    "lastLoginTime": "2024-01-12 00:00:00",
+    "memberDetail": {
+      "memberAge": "29",
+      "memberGender": "male",
+      "birthDate": "1960-09-24",
+      "memberAddress": "台南市"
+    }
+  }
+]
