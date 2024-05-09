@@ -51,20 +51,99 @@ public class ApiController {
 	@Autowired
 	private ShopService shopService;
 
+
+	// 為會員創建新錢包
+	@PostMapping("/trade/createWallet")
+	public ResponseEntity<Trade> insertTrade(@RequestParam Integer memberId) {
+		Trade newTrade = shopService.createWallet(memberId);
+		return ResponseEntity.ok(newTrade);
+	}
+
+	// 依據 memberId 選擇並只顯示最新一筆資料
+	@GetMapping("/trade/latest/{memberId}")
+	public ResponseEntity<Trade> getLatestTradeByMemberId(@PathVariable Integer memberId) {
+		Trade latestTrade = shopService.getLatestTradeByMemberId(memberId);
+		if (latestTrade != null) {
+			return ResponseEntity.ok(latestTrade);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// 根據 memberId 和 change 新增交易
+	@PostMapping("/trade/createTrade")
+	public ResponseEntity<Trade> createTrade(@RequestParam Integer memberId, @RequestParam Integer change) {
+		Trade newTrade = shopService.createTrade(memberId, change);
+		if (newTrade != null) {
+			return ResponseEntity.ok(newTrade);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// 管理員進行撥款
+	@PutMapping("/trade/agree")
+	public void agreeTrade(@RequestParam Integer tradeId) {
+		shopService.agreeTrade(tradeId);
+	}
+
+	// 訂單狀態設為已完成，並將款項存入賣家錢包
+	@PutMapping("/orders/finish")
+	public void finishMemberOrder(@RequestParam Integer memberOrderId) {
+		shopService.finishMemberOrder(memberOrderId);
+	}
+
+	// linepay
+	@GetMapping("/linepay/confirm")
+	public ModelAndView confirmApi(@RequestParam String transactionId, @RequestParam String orderId) {
+		// https://pay.line.me/portal/tw/auth/login
+		// 帳號：test_202404012550@line.pay
+		// 密碼：PySZf!D2B0
+		// 顧客付款成功後，確認付款，款項入帳
+		// 在這個功能中，orderId實際上是paymentMethodId
+		return shopService.confirmApi(transactionId, orderId);
+	}
+
+	// 會員錢包
+	@GetMapping("/trade/{memberId}/{pageNumber}")
+	public ResponseEntity<List<TradeDto>> findTradeByMemberId(@PathVariable Integer memberId,
+			@PathVariable Integer pageNumber) {
+		List<TradeDto> trades = shopService.findTradeByMemberId(memberId, pageNumber);
+		return ResponseEntity.ok(trades);
+	}
+
+	@PostMapping("/report")
+	public void submitReport(@RequestBody Report report) {
+		shopService.submitReport(report);
+	}
+
+	// 顯示所有 report
+	@GetMapping("/report/all/{pageNumber}")
+	public List<ReportDto> findAllReports(@PathVariable Integer pageNumber) {
+		return shopService.findAllReportsSortedByCreateTimeDesc(pageNumber);
+	}
+
+	// 所有交易
+	@GetMapping("/trade/all/{pageNumber}")
+	public ResponseEntity<List<TradeDto>> getAllTrades(@PathVariable Integer pageNumber) {
+		List<TradeDto> trades = shopService.getAllTradesSortedByUpdateTimeDesc(pageNumber);
+		return ResponseEntity.ok(trades);
+	}
+
 	// 搜尋
 	@GetMapping("/searchProduct/{searchMode}/{searchText}")
 	public List<SearchDto> findProductBySearch(@PathVariable String searchMode, @PathVariable String searchText) {
 		return shopService.findProductBySearch(searchMode, searchText);
 	}
 
-	// 收尋-可換頁
+	// 搜尋-可換頁
 	@GetMapping("/searchProduct/{searchMode}/{searchText}/{pageNumber}")
 	public List<SearchDto> findProductBySearchAndPage(@PathVariable String searchMode, @PathVariable String searchText,
 			@PathVariable Integer pageNumber, HttpSession session) {
 		return shopService.findProductBySearchAndPage(searchMode, searchText, pageNumber);
 	}
 
-	// 收尋會員-可換頁
+	// 搜尋會員-可換頁
 	@GetMapping("/member/product/{memberId}/{pageNumber}")
 	public List<SearchDto> findProductByMemberIdAndPage(@PathVariable Integer memberId,
 			@PathVariable Integer pageNumber, HttpSession session) {
@@ -380,35 +459,6 @@ public class ApiController {
 		return shopService.pay(UUID);
 	}
 
-	// linepay
-	@GetMapping("/linepay/confirm")
-	public ModelAndView confirmApi(@RequestParam String transactionId, @RequestParam String orderId) {
-		// https://pay.line.me/portal/tw/auth/login
-		// 帳號：test_202404012550@line.pay
-		// 密碼：PySZf!D2B0
-		// 顧客付款成功後，確認付款，款項入帳
-		// 在這個功能中，orderId實際上是paymentMethodId
-		return shopService.confirmApi(transactionId, orderId);
-	}
-
-	// 會員錢包
-	@GetMapping("/trade/{memberId}/{pageNumber}")
-	public ResponseEntity<List<TradeDto>> findTradeByMemberId(@PathVariable Integer memberId,
-			@PathVariable Integer pageNumber) {
-		List<TradeDto> trades = shopService.findTradeByMemberId(memberId, pageNumber);
-		return ResponseEntity.ok(trades);
-	}
-
-	@PostMapping("/report")
-	public void submitReport(@RequestBody Report report) {
-		shopService.submitReport(report);
-	}
-
-	// 顯示所有 report
-	@GetMapping("/report/all/{pageNumber}")
-	public List<ReportDto> findAllReports(@PathVariable Integer pageNumber) {
-		return shopService.findAllReportsSortedByCreateTimeDesc(pageNumber);
-	}
 
 	// 根據 report 內容修改 report 狀態(成立)
 	@PostMapping("report/changeReportTo8")
@@ -436,56 +486,6 @@ public class ApiController {
 		ReportDto rd = objectMapper.readValue(reportJson, ReportDto.class);
 
 		return shopService.changeReportNot(rd);
-	}
-
-	// 所有交易
-	@GetMapping("/trade/all/{pageNumber}")
-	public ResponseEntity<List<TradeDto>> getAllTrades(@PathVariable Integer pageNumber) {
-		List<TradeDto> trades = shopService.getAllTradesSortedByUpdateTimeDesc(pageNumber);
-		return ResponseEntity.ok(trades);
-	}
-
-// =============================================================================
-
-	// 為會員創建新錢包
-	@PostMapping("/trade/createWallet")
-	public ResponseEntity<Trade> insertTrade(@RequestParam Integer memberId) {
-		Trade newTrade = shopService.createWallet(memberId);
-		return ResponseEntity.ok(newTrade);
-	}
-
-	// 依據 memberId 選擇並只顯示最新一筆資料
-	@GetMapping("/trade/latest/{memberId}")
-	public ResponseEntity<Trade> getLatestTradeByMemberId(@PathVariable Integer memberId) {
-		Trade latestTrade = shopService.getLatestTradeByMemberId(memberId);
-		if (latestTrade != null) {
-			return ResponseEntity.ok(latestTrade);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
-	// 根據 memberId 和 change 新增交易
-	@PostMapping("/trade/createTrade")
-	public ResponseEntity<Trade> createTrade(@RequestParam Integer memberId, @RequestParam Integer change) {
-		Trade newTrade = shopService.createTrade(memberId, change);
-		if (newTrade != null) {
-			return ResponseEntity.ok(newTrade);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
-	// 管理員進行撥款
-	@PutMapping("/trade/agree")
-	public void agreeTrade(@RequestParam Integer tradeId) {
-		shopService.agreeTrade(tradeId);
-	}
-
-	// 訂單狀態設為已完成，並將款項存入賣家錢包
-	@PutMapping("/orders/finish")
-	public void finishMemberOrder(@RequestParam Integer memberOrderId) {
-		shopService.finishMemberOrder(memberOrderId);
 	}
 
 }
