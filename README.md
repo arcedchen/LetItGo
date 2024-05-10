@@ -5,3 +5,5 @@
 前端使用Vue，後端使用Java (Spring Boot)，資料庫使用MS SQL和MySQL
 
 是 [跨域Java軟體工程師就業養成班](https://www.ispan.com.tw/longterm/JJEEITT) 第180期 第1組 的期末專題成果
+
+Controller、Model、Service位於 /java/com/letitgo/shop
