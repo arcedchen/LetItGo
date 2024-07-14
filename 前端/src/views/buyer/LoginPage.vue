@@ -24,12 +24,13 @@
           </div>
           <button class="w-100 btn btn-lg btn-primary" @click.prevent="login">
             登入</button
-          ><button
+          >
+          <!-- <button
             @click="gotoGoogleLoginPage"
             class="w-100 btn btn-lg btn-success mt-2"
           >
             Google 登入
-          </button>
+          </button> -->
           <div class="text-danger text-center mt-3">{{ message }}</div>
           <hr class="my-4" />
           <small class="text-muted"

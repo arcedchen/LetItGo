@@ -922,6 +922,7 @@ public class ShopService {
 			createTrade(mo.getMember().getMemberId(), mo.getTotalAmount());
 		} else if (orderStatus.equals("運送中Complete")) {
 			mo.setOrderStatus("已完成");
+			createTrade(mo.getSellerId(),mo.getTotalAmount());
 		}
 		memberOrderDao.save(mo);
 		return true;
@@ -1244,12 +1245,10 @@ public class ShopService {
 		MemberOrder memberOrder = memberOrderDao.findById(memberOrderId)
 				.orElseThrow(() -> new IllegalArgumentException("查無此訂單: " + memberOrderId));
 		if (!"已完成".equals(memberOrder.getOrderStatus())) {
+			// 將款項轉至賣家的錢包
+			createTrade(memberOrder.getSellerId(), memberOrder.getTotalAmount());
 			memberOrder.setOrderStatus("已完成");
 			memberOrderDao.save(memberOrder);
-			// 將款項轉至賣家的錢包
-			List<MemberOrderDetail> memberOrderDetails = memberOrder.getMemberOrderDetails();
-			Product product = memberOrderDetails.get(0).getProduct();
-			createTrade(product.getMemberId(), memberOrder.getTotalAmount());
 		} else {
 			throw new IllegalStateException("訂單已完成");
 		}
